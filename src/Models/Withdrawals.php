@@ -5,6 +5,8 @@
  * @link http://www.larva.com.cn/
  */
 
+declare (strict_types=1);
+
 namespace Larva\Wallet\Models;
 
 use Carbon\Carbon;
@@ -93,7 +95,7 @@ class Withdrawals extends Model
      */
     public function setSucceeded()
     {
-        $this->update(['status' => static::STATUS_SUCCEEDED, 'succeeded_at' => $this->freshTimestamp()]);
+        $this->save(['status' => static::STATUS_SUCCEEDED, 'succeeded_at' => $this->freshTimestamp()]);
         Event::trigger(new WithdrawalsSuccess($this));
     }
 

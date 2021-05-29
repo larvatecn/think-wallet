@@ -5,6 +5,8 @@
  * @link http://www.larva.com.cn/
  */
 
+declare (strict_types=1);
+
 namespace Larva\Wallet\Models;
 
 use Carbon\Carbon;
@@ -33,7 +35,7 @@ class Wallet extends Model
      */
     public function scopeUserId($query, $user_id)
     {
-        return $query->where('user_id', '=', $user_id);
+        return $query->where('user_id', $user_id);
     }
 
     /**
@@ -69,7 +71,7 @@ class Wallet extends Model
      * @param int $amount 金额 单位分
      * @param string $type 支付类型
      * @param string $clientIP 客户端IP
-     * @return Model|Recharge
+     * @return Recharge
      */
     public function rechargeAction(string $channel, $amount, $type, $clientIP = null)
     {
@@ -82,13 +84,13 @@ class Wallet extends Model
      * @param string $channel
      * @param string $recipient 收款账户
      * @param array $metaData 附加信息
-     * @param string $clientIP 客户端IP
+     * @param string|null $clientIP 客户端IP
      * @return Withdrawals
      * @throws WalletException
      */
-    public function withdrawalsAction($amount, $channel, $recipient, $metaData = [], $clientIP = null)
+    public function withdrawalsAction(int $amount, string $channel, string $recipient, array $metaData = [], string $clientIP = null)
     {
-        $availableAmount = bcsub($this->available_amount, $amount);
+        $availableAmount = $this->available_amount - $amount;
         if ($availableAmount < 0) {//计算后如果余额小于0，那么结果不合法。
             throw new WalletException('Insufficient wallet balance.');//钱包余额不足
         }
