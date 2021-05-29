@@ -12,6 +12,7 @@ use Larva\Transaction\Models\Charge;
 use Larva\Wallet\Events\RechargeFailure;
 use Larva\Wallet\Events\RechargeShipped;
 use think\facade\Event;
+use think\facade\Lang;
 use think\Model;
 use think\model\relation\BelongsTo;
 use think\model\relation\MorphOne;
@@ -80,12 +81,11 @@ class Recharge extends Model
         $this->transaction()->save([
             'user_id' => $this->user_id,
             'type' => Transaction::TYPE_RECHARGE,
-            'description' => trans('wallet.wallet_recharge'),
+            'description' => Lang::get('wallet.wallet_recharge'),
             'amount' => $this->amount,
             'available_amount' => $this->wallet->available_amount + $this->amount
         ]);
         Event::trigger(new RechargeShipped($this));
-        $this->user->notify(new \Larva\Wallet\Notifications\RechargeSucceeded($this->user, $this));
     }
 
     /**

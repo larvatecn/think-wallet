@@ -13,6 +13,7 @@ use Larva\Wallet\Events\WithdrawalsCanceled;
 use Larva\Wallet\Events\WithdrawalsFailure;
 use Larva\Wallet\Events\WithdrawalsSuccess;
 use think\facade\Event;
+use think\facade\Lang;
 use think\Model;
 use think\model\relation\BelongsTo;
 use think\model\relation\MorphOne;
@@ -100,12 +101,12 @@ class Withdrawals extends Model
      * 取消提现
      * @return bool
      */
-    public function setCanceled()
+    public function setCanceled(): bool
     {
         $this->transaction()->save([
             'user_id' => $this->user_id,
             'type' => Transaction::TYPE_WITHDRAWAL_REVOKED,
-            'description' => trans('wallet.withdrawal_revoked'),
+            'description' => Lang::get('wallet.withdrawal_revoked'),
             'amount' => $this->amount,
             'available_amount' => bcadd($this->wallet->available_amount, $this->amount)
         ]);
@@ -118,12 +119,12 @@ class Withdrawals extends Model
      * 提现失败平账
      * @return bool
      */
-    public function setFailed()
+    public function setFailed(): bool
     {
         $this->transaction()->save([
             'user_id' => $this->user_id,
             'type' => Transaction::TYPE_WITHDRAWAL_FAILED,
-            'description' => trans('wallet.withdrawal_failed'),
+            'description' => Lang::get('wallet.withdrawal_failed'),
             'amount' => $this->amount,
             'available_amount' => $this->wallet->available_amount + $this->amount
         ]);
