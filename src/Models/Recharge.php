@@ -34,7 +34,7 @@ use think\model\relation\MorphOne;
  * @property Carbon|null $succeeded_at
  *
  * @property Charge $charge
- * @property \Illuminate\Foundation\Auth\User $user
+ * @property \app\model\User $user
  * @property Transaction $transaction
  * @property Wallet $wallet
  *
@@ -47,11 +47,27 @@ class Recharge extends Model
     const STATUS_FAILED = 'failed';//失败： failed
 
     /**
+     * 与模型关联的数据表。
+     *
+     * @var string
+     */
+    protected $name = 'wallet_recharges';
+
+    /**
      * @return BelongsTo
      */
     public function wallet(): BelongsTo
     {
         return $this->belongsTo(Wallet::class, 'user_id', 'user_id');
+    }
+
+    /**
+     * 关联用户模型
+     * @return BelongsTo
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(config('transaction.user'), 'user_id');
     }
 
     /**
@@ -77,9 +93,9 @@ class Recharge extends Model
     /**
      * 设置交易成功
      */
-    public function setSucceeded()
+    public function setSucceeded(): bool
     {
-        $this->save(['channel' => $this->charge->channel, 'type' => $this->charge->type, 'status' => static::STATUS_SUCCEEDED, 'succeeded_at' => $this->freshTimestamp()]);
+        $status = $this->save(['channel' => $this->charge->channel, 'type' => $this->charge->type, 'status' => static::STATUS_SUCCEEDED, 'succeeded_at' => $this->freshTimestamp()]);
         $this->transaction()->save([
             'user_id' => $this->user_id,
             'type' => Transaction::TYPE_RECHARGE,
@@ -88,15 +104,17 @@ class Recharge extends Model
             'available_amount' => $this->wallet->available_amount + $this->amount
         ]);
         Event::trigger(new RechargeShipped($this));
+        return $status;
     }
 
     /**
      * 设置交易失败
      */
-    public function setFailure()
+    public function setFailure(): bool
     {
-        $this->save(['status' => static::STATUS_FAILED]);
+        $status = $this->save(['status' => static::STATUS_FAILED]);
         Event::trigger(new RechargeFailure($this));
+        return $status;
     }
 
     /**

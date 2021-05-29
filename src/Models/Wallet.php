@@ -21,14 +21,27 @@ use think\model\relation\HasMany;
  * @property Carbon|null $created_at 钱包创建时间
  * @property Carbon|null $updated_at 钱包更新时间
  *
- * @property \Illuminate\Foundation\Auth\User $user
+ * @property \app\model\User $user
  * @property Recharge[] $recharges 钱包充值记录
  * @property Transaction[] $transactions 钱包交易记录
  * @property Withdrawals[] $withdrawals 钱包提现记录
+ *
  * @author Tongle Xu <xutongle@gmail.com>
  */
 class Wallet extends Model
 {
+    /**
+     * 与模型关联的数据表。
+     *
+     * @var string
+     */
+    protected $name = 'wallets';
+
+    /**
+     * @var string 主键字段名
+     */
+    protected $key = 'user_id';
+
     /**
      * 获取指定用户钱包
      * @param int $user_id

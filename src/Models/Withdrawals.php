@@ -35,7 +35,7 @@ use think\model\relation\MorphOne;
  * @property Carbon|null $canceled_at
  * @property Carbon|null $succeeded_at
  *
- * @property \Illuminate\Foundation\Auth\User $user
+ * @property \app\model\User $user
  * @property Wallet $wallet
  * @author Tongle Xu <xutongle@gmail.com>
  */
@@ -45,6 +45,22 @@ class Withdrawals extends Model
     const STATUS_SUCCEEDED = 'succeeded';//完成： succeeded
     const STATUS_FAILED = 'failed';//失败： failed
     const STATUS_CANCELED = 'canceled';//取消： canceled
+
+    /**
+     * 与模型关联的数据表。
+     *
+     * @var string
+     */
+    protected $name = 'wallet_withdrawals';
+
+    /**
+     * 属性类型转换
+     *
+     * @var array
+     */
+    protected $type = [
+        'metadata' => 'array',
+    ];
 
     /**
      * 获取提现附加参数
