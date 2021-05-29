@@ -7,6 +7,7 @@
   "require": {
     "php": "^7.3|^8.0",
     "ext-bcmath": "*",
+    "topthink/framework": "^6.0.0",
     "larva/think-transaction": "^1.0"
   },
   "autoload": {

@@ -1,6 +1,6 @@
-# laravel-wallet
+# think-wallet
 
-Wallet Extension for Laravel. Laravel 余额钱包
+Wallet Extension for ThinkPHP. ThinkPHP 余额钱包
 
 ## 环境需求
 
@@ -9,18 +9,6 @@ Wallet Extension for Laravel. Laravel 余额钱包
 ## Installation
 
 ```bash
-composer require larva/laravel-wallet -vv
+composer require larva/think-wallet -vv
 ```
 
-## for Laravel
-
-This service provider must be registered.
-
-```php
-// config/app.php
-
-'providers' => [
-    '...',
-    Larva\Wallet\WalletServiceProvider::class,
-];
-```
